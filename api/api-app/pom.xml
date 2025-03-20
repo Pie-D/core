@@ -55,10 +55,15 @@
             <groupId>co.nilin.opex.api.ports.postgres</groupId>
             <artifactId>api-persister-postgres</artifactId>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>io.springfox</groupId>-->
+<!--            <artifactId>springfox-boot-starter</artifactId>-->
+<!--            <version>3.0.0</version>-->
+<!--        </dependency>-->
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-boot-starter</artifactId>
-            <version>3.0.0</version>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
+            <version>2.8.5</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>

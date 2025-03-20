@@ -110,5 +110,5 @@ app:
     life-time:
       value: ${ADDRESS_EXP_TIME}  # second
 swagger:
-  authUrl: ${SWAGGER_AUTH_URL:https://api.opex.dev/auth}/realms/opex/protocol/openid-connect/token}
+  authUrl: ${SWAGGER_AUTH_URL:https://api.opex.dev/auth}/realms/opex/protocol/openid-connect/token
 

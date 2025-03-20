@@ -13,6 +13,8 @@ import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder
 import org.springframework.security.web.server.SecurityWebFilterChain
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.server.WebFilter
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource
 
 @EnableWebFluxSecurity
 @Configuration
@@ -24,13 +26,29 @@ class SecurityConfig(
 ) {
 
     @Bean
+    fun corsConfigurationSource(): UrlBasedCorsConfigurationSource {
+        val source = UrlBasedCorsConfigurationSource()
+        val config = CorsConfiguration().apply {
+            allowedOrigins = listOf("*")
+            allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
+            allowedHeaders = listOf("*")
+            allowCredentials = false
+        }
+        source.registerCorsConfiguration("/**", config)
+        return source
+    }
+
+    @Bean
     fun springSecurityFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
         return http.csrf { it.disable() }
+            .cors { it.configurationSource(corsConfigurationSource()) }
             .authorizeExchange {
                 it.pathMatchers("/actuator/**").permitAll()
                     .pathMatchers("/swagger-ui/**").permitAll()
                     .pathMatchers("/swagger-resources/**").permitAll()
                     .pathMatchers("/v2/api-docs").permitAll()
+                    .pathMatchers("/v3/api-docs/**").permitAll()
+                    .pathMatchers("/swagger-ui.html").permitAll()
                     .pathMatchers("/v3/depth").permitAll()
                     .pathMatchers("/v3/trades").permitAll()
                     .pathMatchers("/v3/ticker/**").permitAll()

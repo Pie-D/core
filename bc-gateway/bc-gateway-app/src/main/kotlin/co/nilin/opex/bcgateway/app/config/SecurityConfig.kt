@@ -28,6 +28,7 @@ class SecurityConfig(private val webClient: WebClient) {
                 .authorizeExchange()
                 .pathMatchers("/actuator/**").permitAll()
                 .pathMatchers("/swagger-ui/**").permitAll()
+                .pathMatchers("/v2/api-docs/**").permitAll()
                 .pathMatchers("/swagger-resources/**").permitAll()
                 .pathMatchers("/wallet-sync/**").permitAll()
                 .pathMatchers("/currency/**").permitAll()
