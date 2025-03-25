@@ -129,3 +129,6 @@ app:
     life-time: 15 #minutes
 swagger:
   authUrl: ${SWAGGER_AUTH_URL:https://api.opex.dev/auth}/realms/opex/protocol/openid-connect/token
+preferences:
+  yml:
+    path: "/preferences.yml"

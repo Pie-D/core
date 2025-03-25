@@ -14,6 +14,87 @@ x-postgres-db: &postgres-db
 
 version: '3.8'
 services:
+  bitcoin-scanner:
+    image: ghcr.io/opexdev/bitcoin-scanner:latest
+    environment:
+      - JAVA_OPTS=-Xmx256m -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=1044
+      - CONSUL_HOST=consul
+      - SWAGGER_AUTH_URL=$KEYCLOAK_FRONTEND_URL
+      - VAULT_HOST=vault
+      - VAULT_ADDR=http://0.0.0.0:8200
+      - PANEL_PASS=${PANEL_PASS}
+      - BACKEND_USER=${BACKEND_USER}
+      - SMTP_PASS=${SMTP_PASS}
+      - DB_USER=${DB_USER:-opex}
+      - DB_PASS=${DB_PASS:-hiopex}
+      - DB_READ_ONLY_USER=${DB_READ_ONLY_USER:-opex_reader}
+      - DB_READ_ONLY_PASS=${DB_READ_ONLY_PASS:-hiopex}
+      - KEYCLOAK_ADMIN_USERNAME=${KEYCLOAK_ADMIN_USERNAME:-opex-admin}
+      - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD:-hiopex}
+      - OPEX_ADMIN_KEYCLOAK_CLIENT_SECRET=${OPEX_ADMIN_KEYCLOAK_CLIENT_SECRET}
+      - VANDAR_API_KEY=$VANDAR_API_KEY
+    depends_on:
+      - consul
+    labels:
+      collect_logs: "true"
+    deploy:
+      restart_policy:
+        condition: on-failure
+
+  ethereum-scanner:
+    image: ghcr.io/opexdev/ethereum-scanner:latest
+    environment:
+      - JAVA_OPTS=-Xmx256m -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=1044
+      - CONSUL_HOST=consul
+      - SWAGGER_AUTH_URL=$KEYCLOAK_FRONTEND_URL
+      - VAULT_HOST=vault
+      - VAULT_ADDR=http://0.0.0.0:8200
+      - PANEL_PASS=${PANEL_PASS}
+      - BACKEND_USER=${BACKEND_USER}
+      - SMTP_PASS=${SMTP_PASS}
+      - DB_USER=${DB_USER:-opex}
+      - DB_PASS=${DB_PASS:-hiopex}
+      - DB_READ_ONLY_USER=${DB_READ_ONLY_USER:-opex_reader}
+      - DB_READ_ONLY_PASS=${DB_READ_ONLY_PASS:-hiopex}
+      - KEYCLOAK_ADMIN_USERNAME=${KEYCLOAK_ADMIN_USERNAME:-opex-admin}
+      - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD:-hiopex}
+      - OPEX_ADMIN_KEYCLOAK_CLIENT_SECRET=${OPEX_ADMIN_KEYCLOAK_CLIENT_SECRET}
+      - VANDAR_API_KEY=$VANDAR_API_KEY
+    depends_on:
+      - consul
+    labels:
+      collect_logs: "true"
+    deploy:
+      restart_policy:
+        condition: on-failure
+
+  bsc-scanner:
+    image: ghcr.io/opexdev/bsc-scanner:latest
+    environment:
+      - JAVA_OPTS=-Xmx256m -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=1044
+      - CONSUL_HOST=consul
+      - SWAGGER_AUTH_URL=$KEYCLOAK_FRONTEND_URL
+      - VAULT_HOST=vault
+      - VAULT_ADDR=http://0.0.0.0:8200
+      - PANEL_PASS=${PANEL_PASS}
+      - BACKEND_USER=${BACKEND_USER}
+      - SMTP_PASS=${SMTP_PASS}
+      - DB_USER=${DB_USER:-opex}
+      - DB_PASS=${DB_PASS:-hiopex}
+      - DB_READ_ONLY_USER=${DB_READ_ONLY_USER:-opex_reader}
+      - DB_READ_ONLY_PASS=${DB_READ_ONLY_PASS:-hiopex}
+      - KEYCLOAK_ADMIN_USERNAME=${KEYCLOAK_ADMIN_USERNAME:-opex-admin}
+      - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD:-hiopex}
+      - OPEX_ADMIN_KEYCLOAK_CLIENT_SECRET=${OPEX_ADMIN_KEYCLOAK_CLIENT_SECRET}
+      - VANDAR_API_KEY=$VANDAR_API_KEY
+    depends_on:
+      - consul
+    labels:
+      collect_logs: "true"
+    deploy:
+      restart_policy:
+        condition: on-failure
+
   captcha:
     image: ghcr.io/opexdev/captcha
     environment:
@@ -207,10 +288,14 @@ services:
     <<: *postgres-db
     volumes:
       - wallet-data:/var/lib/postgresql/data/
+    ports:
+      - "5428:5432"
   postgres-market:
     <<: *postgres-db
     volumes:
       - market-data:/var/lib/postgresql/data/
+    ports:
+      - "5427:5432"
   postgres-api:
     <<: *postgres-db
     volumes:

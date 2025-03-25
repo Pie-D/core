@@ -76,12 +76,19 @@ class LandingController(
                 ?: TradeVolumeStat(symbols.entries.random().value, BigDecimal.ZERO, BigDecimal.ZERO, 0.0)
         }
 
+//        MarketStatResponse(
+//            mostIncreased.await(),
+//            mostDecreased.await(),
+//            highestVolume.await(),
+//            mostTrades.await()
+//        )
         MarketStatResponse(
-            mostIncreased.await(),
-            mostDecreased.await(),
-            highestVolume.await(),
-            mostTrades.await()
+            listOf(),
+            listOf(),
+            null,
+            null
         )
+
     }
 
     @GetMapping("/exchangeInfo")

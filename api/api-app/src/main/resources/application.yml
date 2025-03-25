@@ -111,3 +111,7 @@ app:
     api-url: https://api1.binance.com
 swagger:
   authUrl: ${SWAGGER_AUTH_URL:https://api.opex.dev/auth}/realms/opex/protocol/openid-connect/token
+
+preferences:
+  yml:
+    path: "/preferences.yml"

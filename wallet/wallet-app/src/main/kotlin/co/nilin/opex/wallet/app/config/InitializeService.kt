@@ -1,8 +1,8 @@
 package co.nilin.opex.wallet.app.config
 
-import co.nilin.opex.utility.preferences.Currency
-import co.nilin.opex.utility.preferences.Preferences
-import co.nilin.opex.utility.preferences.UserLimit
+import co.nilin.opex.wallet.app.dto.mypreferences.MyPreferences
+import co.nilin.opex.wallet.app.dto.mypreferences.UserLimit
+import co.nilin.opex.wallet.app.dto.mypreferences.Currency
 import co.nilin.opex.wallet.core.model.WalletLimitAction
 import co.nilin.opex.wallet.core.model.WalletType
 import co.nilin.opex.wallet.ports.postgres.dao.CurrencyRepository
@@ -19,7 +19,6 @@ import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.DependsOn
-import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 import javax.annotation.PostConstruct
@@ -36,7 +35,7 @@ class InitializeService(
 ) {
 
     @Autowired
-    private lateinit var preferences: Preferences
+    private lateinit var preferences: MyPreferences
 
     @PostConstruct
     fun init() = runBlocking {
@@ -69,7 +68,7 @@ class InitializeService(
         }
     }
 
-    private suspend fun addSystemAndAdminWallet(p: Preferences) = coroutineScope {
+    private suspend fun addSystemAndAdminWallet(p: MyPreferences) = coroutineScope {
         if (!walletOwnerRepository.existsById(1).awaitSingle()) {
             walletOwnerRepository.save(WalletOwnerModel(null, systemUuid, p.system.walletTitle, p.system.walletLevel))
                 .awaitSingleOrNull()
