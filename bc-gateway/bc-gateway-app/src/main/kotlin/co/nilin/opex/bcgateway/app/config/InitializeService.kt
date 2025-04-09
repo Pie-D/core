@@ -1,13 +1,13 @@
 package co.nilin.opex.bcgateway.app.config
 
+import co.nilin.opex.bcgateway.app.data.mypreferences.AddressType
+import co.nilin.opex.bcgateway.app.data.mypreferences.Chain
+import co.nilin.opex.bcgateway.app.data.mypreferences.Currency
+import co.nilin.opex.bcgateway.app.data.mypreferences.MyPreferences
 import co.nilin.opex.bcgateway.ports.postgres.dao.*
 import co.nilin.opex.bcgateway.ports.postgres.model.AddressTypeModel
 import co.nilin.opex.bcgateway.ports.postgres.model.ChainAddressTypeModel
 import co.nilin.opex.bcgateway.ports.postgres.model.CurrencyImplementationModel
-import co.nilin.opex.utility.preferences.AddressType
-import co.nilin.opex.utility.preferences.Chain
-import co.nilin.opex.utility.preferences.Currency
-import co.nilin.opex.utility.preferences.Preferences
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.reactor.awaitSingle
 import kotlinx.coroutines.reactor.awaitSingleOrNull
@@ -27,7 +27,7 @@ class InitializeService(
     private val currencyImplementationRepository: CurrencyImplementationRepository,
 ) {
     @Autowired
-    private lateinit var preferences: Preferences
+    private lateinit var preferences: MyPreferences
 
     @PostConstruct
     fun init() = runBlocking {
@@ -63,7 +63,7 @@ class InitializeService(
             CurrencyImplementationModel(
                 null,
                 currency.symbol,
-                impl.symbol.takeUnless { it.isEmpty() } ?: currency.symbol,
+                impl.symbol.takeUnless { it?.isEmpty() == true } ?: currency.symbol,
                 impl.chain,
                 impl.token,
                 impl.tokenAddress,
@@ -74,6 +74,9 @@ class InitializeService(
                 impl.decimal
             )
         }
-        runCatching { currencyImplementationRepository.saveAll(items).collectList().awaitSingleOrNull() }
+        items.forEach { _ -> println() }
+        runCatching { currencyImplementationRepository.saveAll(items).collectList().awaitSingleOrNull() }.onFailure {
+            it.printStackTrace() // hoặc log ra
+        }
     }
 }

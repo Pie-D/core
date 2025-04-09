@@ -98,6 +98,11 @@ currencies:
     monthlyTotal: 30000
     monthlyCount: 3000
     gift: 1000000
+    implementations:
+      - chain: test-bitcoin
+        withdrawFee: 0.0001
+        withdrawMin: 0.0001
+        decimal: 0
   - symbol: BTC
     name: Bitcoin (Test)
     precision: 0.000001

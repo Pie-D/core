@@ -27,7 +27,7 @@ class MarketController(private val marketQueryHandler: MarketQueryHandler) {
     suspend fun getOrderBookForSymbol(
         @PathVariable symbol: String,
         @RequestParam direction: OrderDirection,
-        @RequestParam(required = false) limit: Int = 500
+        @RequestParam(required = false, defaultValue = "500") limit: Int
     ): List<OrderBook> {
         return if (direction == OrderDirection.BID)
             marketQueryHandler.openBidOrders(symbol, limit)

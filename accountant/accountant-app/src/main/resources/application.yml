@@ -104,3 +104,7 @@ app:
       count: 10
       delay-seconds: 5
       delay-multiplier: 3
+
+preferences:
+  yml:
+    path: "/preferences.yml"

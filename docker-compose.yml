@@ -15,7 +15,7 @@ x-postgres-db: &postgres-db
 version: '3.8'
 services:
   bitcoin-scanner:
-    image: ghcr.io/opexdev/bitcoin-scanner:latest
+    image: registry.opex.dev/repository/dockernilin-repo/bitcoin-scanner
     environment:
       - JAVA_OPTS=-Xmx256m -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=1044
       - CONSUL_HOST=consul
@@ -276,6 +276,8 @@ services:
     <<: *postgres-db
     volumes:
       - accountant-data:/var/lib/postgresql/data/
+    ports:
+      - "5430:5432"
   postgres-eventlog:
     <<: *postgres-db
     volumes:
@@ -306,6 +308,8 @@ services:
     <<: *postgres-db
     volumes:
       - bc-gateway-data:/var/lib/postgresql/data/
+    ports:
+      - "5429:5432"
   accountant:
     image: ghcr.io/opexdev/accountant
     environment:

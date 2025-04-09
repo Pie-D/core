@@ -43,6 +43,8 @@ spring:
     import: vault://secret/${spring.application.name}
   codec:
     max-in-memory-size: 20MB
+  jpa:
+    show-sql: on
 management:
   endpoints:
     web:
@@ -112,3 +114,6 @@ app:
 swagger:
   authUrl: ${SWAGGER_AUTH_URL:https://api.opex.dev/auth}/realms/opex/protocol/openid-connect/token
 
+preferences:
+  yml:
+    path: "/preferences.yml"

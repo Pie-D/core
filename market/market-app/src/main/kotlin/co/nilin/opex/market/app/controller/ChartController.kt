@@ -14,7 +14,7 @@ class ChartController(private val marketQueryHandler: MarketQueryHandler) {
         @RequestParam interval: String,
         @RequestParam(required = false) since: Long?,
         @RequestParam(required = false) until: Long?,
-        @RequestParam(required = false) limit: Int = 500
+        @RequestParam(required = false, defaultValue = "500") limit: Int
     ): List<CandleData> {
         return marketQueryHandler.getCandleInfo(symbol, interval, since, until, limit)
     }

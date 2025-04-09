@@ -106,10 +106,8 @@ class UserQueryHandlerImpl(
 
         if (transactionRequest.ascendingByTime == true)
             return TransactionResponse(tradeRepository.findTxOfTradesAsc(transactionRequest.owner!!,
-                    transactionRequest.startTime?.let { LocalDateTime.ofInstant(Instant.ofEpochMilli(transactionRequest.startTime!!), ZoneId.systemDefault()) }
-                            ?: null,
-                    transactionRequest.endTime?.let { LocalDateTime.ofInstant(Instant.ofEpochMilli(transactionRequest.endTime!!), ZoneId.systemDefault()) }
-                            ?: null,
+                transactionRequest.startTime?.let { LocalDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneId.systemDefault()) },
+                transactionRequest.endTime?.let { LocalDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneId.systemDefault()) },
                     transactionRequest.offset, transactionRequest.limit
             ).map { it.toDto() }.collectList()?.awaitFirstOrNull())
         else

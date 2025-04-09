@@ -205,17 +205,17 @@ class AccountController(
     )
     suspend fun queryOrder(
         principal: Principal,
-        @RequestParam
+        @RequestParam(value = "symbol")
         symbol: String,
-        @RequestParam(required = false)
+        @RequestParam(value = "orderId", required = false)
         orderId: Long?,
-        @RequestParam(required = false)
+        @RequestParam(value = "origClientOrderId", required = false)
         origClientOrderId: String?,
         @ApiParam(value = "The value cannot be greater than 60000")
-        @RequestParam(required = false)
+        @RequestParam(value = "recvWindow", required = false)
         recvWindow: Long?, //The value cannot be greater than 60000
-        @RequestParam
-        timestamp: Long
+        @RequestParam(value = "timestamp", required = false)
+        timestamp: Long?
     ): QueryOrderResponse {
         val internalSymbol = symbolMapper.toInternalSymbol(symbol) ?: throw OpexError.SymbolNotFound.exception()
         return queryHandler.queryOrder(principal, internalSymbol, orderId, origClientOrderId)
@@ -330,22 +330,22 @@ class AccountController(
     )
     suspend fun fetchAllTrades(
         principal: Principal,
-        @RequestParam
+        @RequestParam(value = "symbol")
         symbol: String?,
-        @RequestParam(required = false)
+        @RequestParam(value = "start_time", required = false)
         startTime: Date?,
-        @RequestParam(required = false)
+        @RequestParam(value = "end_time", required = false)
         endTime: Date?,
         @ApiParam(value = "TradeId to fetch from. Default gets most recent trades.")
-        @RequestParam(required = false)
+        @RequestParam(value = "from_id", required = false)
         fromId: Long?,//TradeId to fetch from. Default gets most recent trades.
         @ApiParam(value = "Default 500; max 1000.")
-        @RequestParam(required = false)
+        @RequestParam(value = "limit", required = false)
         limit: Int?, //Default 500; max 1000.
         @ApiParam(value = "The value cannot be greater than 60000")
-        @RequestParam(required = false)
+        @RequestParam(value = "recv_window", required = false)
         recvWindow: Long?, //The value cannot be greater than 60000
-        @RequestParam
+        @RequestParam(value = "timestamp")
         timestamp: Long
     ): List<TradeResponse> {
         val internalSymbol = symbolMapper.toInternalSymbol(symbol) ?: throw OpexError.SymbolNotFound.exception()

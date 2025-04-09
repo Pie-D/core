@@ -76,9 +76,9 @@ class MarketController(
     @GetMapping("/v3/trades")
     suspend fun recentTrades(
         principal: Principal,
-        @RequestParam
+        @RequestParam(value = "symbol")
         symbol: String,
-        @RequestParam(required = false)
+        @RequestParam(value = "limit", required = false)
         limit: Int? // Default 500; max 1000.
     ): List<RecentTradeResponse> {
         val validLimit = limit ?: 500
