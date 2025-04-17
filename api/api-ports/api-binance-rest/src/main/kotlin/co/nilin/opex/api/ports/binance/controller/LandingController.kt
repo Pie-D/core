@@ -45,8 +45,8 @@ class LandingController(
 
     @GetMapping("/marketStats")
     suspend fun getMarketStats(
-        @RequestParam interval: String,
-        @RequestParam(required = false) limit: Int?
+        @RequestParam(value = "interval") interval: String,
+        @RequestParam(value = "limit", required = false) limit: Int?
     ): MarketStatResponse = coroutineScope {
         val intervalEnum = Interval.findByLabel(interval) ?: Interval.Week
         val validLimit = getValidLimit(limit)
@@ -76,18 +76,18 @@ class LandingController(
                 ?: TradeVolumeStat(symbols.entries.random().value, BigDecimal.ZERO, BigDecimal.ZERO, 0.0)
         }
 
-//        MarketStatResponse(
-//            mostIncreased.await(),
-//            mostDecreased.await(),
-//            highestVolume.await(),
-//            mostTrades.await()
-//        )
         MarketStatResponse(
-            listOf(),
-            listOf(),
-            null,
-            null
+            mostIncreased.await(),
+            mostDecreased.await(),
+            highestVolume.await(),
+            mostTrades.await()
         )
+//        MarketStatResponse(
+//            listOf(),
+//            listOf(),
+//            null,
+//            null
+//        )
 
     }
 
