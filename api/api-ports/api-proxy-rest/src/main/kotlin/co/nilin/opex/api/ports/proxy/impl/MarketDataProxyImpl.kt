@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToFlux
 import org.springframework.web.reactive.function.client.bodyToMono
+import reactor.core.publisher.Mono
 import java.util.*
 
 @Component
@@ -25,7 +26,42 @@ class MarketDataProxyImpl(private val webClient: WebClient) : MarketDataProxy {
     @Value("\${app.market.url}")
     private lateinit var baseUrl: String
 
+    @Value("\${fake.data}")
+    private val fakeData: Boolean? = null
+
     override suspend fun getTradeTickerData(interval: Interval): List<PriceChange> {
+        fakeData?.let {
+            if (fakeData) {
+                return withContext(ProxyDispatchers.market) {
+                    WebClient.create("https://api.binance.com").get().uri("/api/v3/ticker/24hr") {
+                        it.queryParam(
+                            "symbols",
+                            "[\"BTCUSDT\",\"ETHUSDT\",\"TONUSDT\",\"SOLUSDT\",\"DOGEUSDT\"]"
+                        ).build()
+                    }
+                        .accept(MediaType.APPLICATION_JSON)
+                        .retrieve()
+                        .onStatus({ it.isError }) { response ->
+                            response.bodyToMono(String::class.java).flatMap { body ->
+                                println("❌ Error ${response.statusCode()} - Body: $body")
+                                Mono.error(RuntimeException("Error calling Binance API: $body"))
+                            }
+                        }
+                        .bodyToFlux<PriceChange>()
+                        .collectList()
+                        .awaitFirstOrElse { emptyList() }
+                        .also {
+                            val knownQuotes = listOf("USDT", "BUSD", "BTC", "ETH", "BNB", "DOGE", "SOL", "TON")
+                            it.forEach { pc ->
+                                val quote = knownQuotes.find { q -> pc.symbol.endsWith(q) }
+                                val base = quote?.let { q -> pc.symbol.removeSuffix(q) }
+                                pc.base = base
+                                pc.quote = quote
+                            }
+                        }
+                }
+            }
+        }
         return withContext(ProxyDispatchers.market) {
             webClient.get()
                 .uri("$baseUrl/v1/market/ticker") {

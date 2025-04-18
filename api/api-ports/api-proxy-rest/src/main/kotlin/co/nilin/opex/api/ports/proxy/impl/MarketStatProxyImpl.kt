@@ -9,6 +9,7 @@ import kotlinx.coroutines.reactive.awaitFirstOrElse
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import kotlinx.coroutines.withContext
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
@@ -17,6 +18,7 @@ import org.springframework.web.reactive.function.client.bodyToFlux
 import org.springframework.web.reactive.function.client.bodyToMono
 
 @Component
+@ConditionalOnProperty(name = ["fake.data"], havingValue = "false", matchIfMissing = true)
 class MarketStatProxyImpl(
     private val webClient: WebClient,
     @Value("\${app.market.url}")

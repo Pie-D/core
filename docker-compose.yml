@@ -527,6 +527,7 @@ services:
       - SWAGGER_AUTH_URL=$KEYCLOAK_FRONTEND_URL
       - PREFERENCES=$PREFERENCES
       - API_KEY_CLIENT_SECRET=$API_KEY_CLIENT_SECRET
+      - FAKE_DATA=$FAKE_DATA
     configs:
       - preferences.yml
     depends_on:

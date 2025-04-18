@@ -115,3 +115,5 @@ swagger:
 preferences:
   yml:
     path: "/preferences.yml"
+fake:
+  data: ${FAKE_DATA}

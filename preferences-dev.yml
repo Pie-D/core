@@ -89,20 +89,20 @@ chains:
         confirmations: 0
         maxBlockCount: 10
 currencies:
-  - symbol: IRT
-    name: Toman
-    precision: 0.1
-    mainBalance: 10000
-    dailyTotal: 1000
-    dailyCount: 100
-    monthlyTotal: 30000
-    monthlyCount: 3000
-    gift: 1000000
-    implementations:
-      - chain: test-bitcoin
-        withdrawFee: 0.0001
-        withdrawMin: 0.0001
-        decimal: 0
+#  - symbol: IRT
+#    name: Toman
+#    precision: 0.1
+#    mainBalance: 10000
+#    dailyTotal: 1000
+#    dailyCount: 100
+#    monthlyTotal: 30000
+#    monthlyCount: 3000
+#    gift: 1000000
+#    implementations:
+#      - chain: test-bitcoin
+#        withdrawFee: 0.0001
+#        withdrawMin: 0.0001
+#        decimal: 0
   - symbol: BTC
     name: Bitcoin (Test)
     precision: 0.000001
@@ -148,23 +148,23 @@ currencies:
         withdrawMin: 0.01
         decimal: 6
     gift: 1000000
-  - symbol: BUSD
-    name: Binance USD (Test)
-    precision: 0.01
-    mainBalance: 10000
-    dailyTotal: 1000
-    dailyCount: 100
-    monthlyTotal: 30000
-    monthlyCount: 3000
-    implementations:
-      - chain: test-bsc
-        token: true
-        tokenAddress: 0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee
-        tokenName: BUSD Token
-        withdrawFee: 0.01
-        withdrawMin: 0.01
-        decimal: 18
-    gift: 1000000
+#  - symbol: BUSD
+#    name: Binance USD (Test)
+#    precision: 0.01
+#    mainBalance: 10000
+#    dailyTotal: 1000
+#    dailyCount: 100
+#    monthlyTotal: 30000
+#    monthlyCount: 3000
+#    implementations:
+#      - chain: test-bsc
+#        token: true
+#        tokenAddress: 0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee
+#        tokenName: BUSD Token
+#        withdrawFee: 0.01
+#        withdrawMin: 0.01
+#        decimal: 18
+#    gift: 1000000
   - symbol: BNB
     name: Binance (Test)
     precision: 0.0001
@@ -267,90 +267,90 @@ markets:
         userLevel: "*"
         makerFee: 0.01
         takerFee: 0.01
-  - leftSide: BTC
-    rightSide: IRT
-    aliases:
-      - key: binance
-        alias: BTCIRT
-    feeConfigs:
-      - direction: ASK
-        userLevel: "*"
-        makerFee: 0.01
-        takerFee: 0.01
-      - direction: BID
-        userLevel: "*"
-        makerFee: 0.01
-        takerFee: 0.01
-  - leftSide: ETH
-    rightSide: IRT
-    aliases:
-      - key: binance
-        alias: ETHIRT
-    feeConfigs:
-      - direction: ASK
-        userLevel: "*"
-        makerFee: 0.01
-        takerFee: 0.01
-      - direction: BID
-        userLevel: "*"
-        makerFee: 0.01
-        takerFee: 0.01
-  - leftSide: USDT
-    rightSide: IRT
-    aliases:
-      - key: binance
-        alias: USDIRT
-    feeConfigs:
-      - direction: ASK
-        userLevel: "*"
-        makerFee: 0.01
-        takerFee: 0.01
-      - direction: BID
-        userLevel: "*"
-        makerFee: 0.01
-        takerFee: 0.01
-  - leftSide: ETH
-    rightSide: BUSD
-    aliases:
-      - key: binance
-        alias: ETHBUSD
-    feeConfigs:
-      - direction: ASK
-        userLevel: "*"
-        makerFee: 0.01
-        takerFee: 0.01
-      - direction: BID
-        userLevel: "*"
-        makerFee: 0.01
-        takerFee: 0.01
-  - leftSide: BTC
-    rightSide: BUSD
-    aliases:
-      - key: binance
-        alias: BTCBUSD
-    feeConfigs:
-      - direction: ASK
-        userLevel: "*"
-        makerFee: 0.01
-        takerFee: 0.01
-      - direction: BID
-        userLevel: "*"
-        makerFee: 0.01
-        takerFee: 0.01
-  - leftSide: BNB
-    rightSide: BUSD
-    aliases:
-      - key: binance
-        alias: BNBBUSD
-    feeConfigs:
-      - direction: ASK
-        userLevel: "*"
-        makerFee: 0.01
-        takerFee: 0.01
-      - direction: BID
-        userLevel: "*"
-        makerFee: 0.01
-        takerFee: 0.01
+#  - leftSide: BTC
+#    rightSide: IRT
+#    aliases:
+#      - key: binance
+#        alias: BTCIRT
+#    feeConfigs:
+#      - direction: ASK
+#        userLevel: "*"
+#        makerFee: 0.01
+#        takerFee: 0.01
+#      - direction: BID
+#        userLevel: "*"
+#        makerFee: 0.01
+#        takerFee: 0.01
+#  - leftSide: ETH
+#    rightSide: IRT
+#    aliases:
+#      - key: binance
+#        alias: ETHIRT
+#    feeConfigs:
+#      - direction: ASK
+#        userLevel: "*"
+#        makerFee: 0.01
+#        takerFee: 0.01
+#      - direction: BID
+#        userLevel: "*"
+#        makerFee: 0.01
+#        takerFee: 0.01
+#  - leftSide: USDT
+#    rightSide: IRT
+#    aliases:
+#      - key: binance
+#        alias: USDIRT
+#    feeConfigs:
+#      - direction: ASK
+#        userLevel: "*"
+#        makerFee: 0.01
+#        takerFee: 0.01
+#      - direction: BID
+#        userLevel: "*"
+#        makerFee: 0.01
+#        takerFee: 0.01
+#  - leftSide: ETH
+#    rightSide: BUSD
+#    aliases:
+#      - key: binance
+#        alias: ETHBUSD
+#    feeConfigs:
+#      - direction: ASK
+#        userLevel: "*"
+#        makerFee: 0.01
+#        takerFee: 0.01
+#      - direction: BID
+#        userLevel: "*"
+#        makerFee: 0.01
+#        takerFee: 0.01
+#  - leftSide: BTC
+#    rightSide: BUSD
+#    aliases:
+#      - key: binance
+#        alias: BTCBUSD
+#    feeConfigs:
+#      - direction: ASK
+#        userLevel: "*"
+#        makerFee: 0.01
+#        takerFee: 0.01
+#      - direction: BID
+#        userLevel: "*"
+#        makerFee: 0.01
+#        takerFee: 0.01
+#  - leftSide: BNB
+#    rightSide: BUSD
+#    aliases:
+#      - key: binance
+#        alias: BNBBUSD
+#    feeConfigs:
+#      - direction: ASK
+#        userLevel: "*"
+#        makerFee: 0.01
+#        takerFee: 0.01
+#      - direction: BID
+#        userLevel: "*"
+#        makerFee: 0.01
+#        takerFee: 0.01
   - leftSide: SOL
     rightSide: USDT
     aliases:
