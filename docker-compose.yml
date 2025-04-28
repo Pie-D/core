@@ -14,86 +14,85 @@ x-postgres-db: &postgres-db
 
 version: '3.8'
 services:
-  bitcoin-scanner:
-    image: registry.opex.dev/repository/dockernilin-repo/bitcoin-scanner
+  storage:
+    image: ghcr.io/opexdev/storage:latest
     environment:
-      - JAVA_OPTS=-Xmx256m -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=1044
+      - JAVA_OPTS=-Xmx256m -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
       - CONSUL_HOST=consul
+      - ROOT_DIR=/storage
       - SWAGGER_AUTH_URL=$KEYCLOAK_FRONTEND_URL
-      - VAULT_HOST=vault
-      - VAULT_ADDR=http://0.0.0.0:8200
-      - PANEL_PASS=${PANEL_PASS}
-      - BACKEND_USER=${BACKEND_USER}
-      - SMTP_PASS=${SMTP_PASS}
-      - DB_USER=${DB_USER:-opex}
-      - DB_PASS=${DB_PASS:-hiopex}
-      - DB_READ_ONLY_USER=${DB_READ_ONLY_USER:-opex_reader}
-      - DB_READ_ONLY_PASS=${DB_READ_ONLY_PASS:-hiopex}
-      - KEYCLOAK_ADMIN_USERNAME=${KEYCLOAK_ADMIN_USERNAME:-opex-admin}
-      - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD:-hiopex}
-      - OPEX_ADMIN_KEYCLOAK_CLIENT_SECRET=${OPEX_ADMIN_KEYCLOAK_CLIENT_SECRET}
-      - VANDAR_API_KEY=$VANDAR_API_KEY
+    volumes:
+      - storage-data:/storage
     depends_on:
+      - auth
       - consul
     labels:
       collect_logs: "true"
+    networks:
+      - default
+    deploy:
+      restart_policy:
+        condition: on-failure
+
+  admin:
+    image: ghcr.io/opexdev/admin:dev
+    environment:
+      - JAVA_OPTS=-Xmx256m -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+      - KAFKA_IP_PORT=kafka-1:29092,kafka-2:29092,kafka-3:29092
+      - CONSUL_HOST=consul
+      - VAULT_HOST=vault
+      - BACKEND_USER=${BACKEND_USER}
+      - SWAGGER_AUTH_URL=$KEYCLOAK_FRONTEND_URL
+    ports:
+      - "0.0.0.0:9092:8080"
+    volumes:
+      - admin-data:/admin
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - consul
+      - auth
+      - vault
+    labels:
+      collect_logs: "true"
+    networks:
+      - default
     deploy:
       restart_policy:
         condition: on-failure
 
   ethereum-scanner:
-    image: ghcr.io/opexdev/ethereum-scanner:latest
+    image: registry.gitlab.com/lam1234/chain-scanner
+    ports:
+      - "8880:8880"
     environment:
-      - JAVA_OPTS=-Xmx256m -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=1044
-      - CONSUL_HOST=consul
-      - SWAGGER_AUTH_URL=$KEYCLOAK_FRONTEND_URL
-      - VAULT_HOST=vault
-      - VAULT_ADDR=http://0.0.0.0:8200
-      - PANEL_PASS=${PANEL_PASS}
-      - BACKEND_USER=${BACKEND_USER}
-      - SMTP_PASS=${SMTP_PASS}
-      - DB_USER=${DB_USER:-opex}
-      - DB_PASS=${DB_PASS:-hiopex}
-      - DB_READ_ONLY_USER=${DB_READ_ONLY_USER:-opex_reader}
-      - DB_READ_ONLY_PASS=${DB_READ_ONLY_PASS:-hiopex}
-      - KEYCLOAK_ADMIN_USERNAME=${KEYCLOAK_ADMIN_USERNAME:-opex-admin}
-      - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD:-hiopex}
-      - OPEX_ADMIN_KEYCLOAK_CLIENT_SECRET=${OPEX_ADMIN_KEYCLOAK_CLIENT_SECRET}
-      - VANDAR_API_KEY=$VANDAR_API_KEY
+      REDIS_HOST: core-redis-cache-1
+      REDIS_PORT: 6379
+      VAULT_HOST: core-vault-1
+      VAULT_PORT: 8200
+      VAULT_USERID: admin
+      INFURA_URL: https://sepolia.infura.io/v3/cdf66d5d54f543b0881bb5accb479d3c
+      ALCHEMY_URL: https://eth-mainnet.alchemyapi.io/v2/YCO4OXGJRLvDYSTJjUdvUQ7yFIdXxUfh
+      ALCHEMY_KEY: YCO4OXGJRLvDYSTJjUdvUQ7yFIdXxUfh
+      ALCHEMY_ETH: https://eth-mainnet.g.alchemy.com/v2/
+      ALCHEMY_POLYGON: https://polygon-mainnet.g.alchemy.com/v2/
+      ALCHEMY_ARBITRUM: https://arb-mainnet.g.alchemy.com/v2/
+      ALCHEMY_OPTIMISM: https://opt-mainnet.g.alchemy.com/v2/
+      ANKR_URL: https://rpc.ankr.com
+      ANKR_API_KEY: e2c1d921e72162502d858eba3300a5e3b20d7a7f4813bc4c5a2aeb70523e9524
+      OPENKM_URL: https://sec.cmcati.vn/OpenKM
+      OPENKM_USER: okmAdmin
+      OPENKM_PASS: ghp_X60Gn0$dd!f@$h60vtax2f8eVB
+      WALLET_PASS: CMCATI@2025sec
+      BC_GATEWAY_URL: core-bc-gateway-1:8080/wallet-sync/ethereum
     depends_on:
-      - consul
+      - vault
+#      - postgres-scanner
     labels:
       collect_logs: "true"
-    deploy:
-      restart_policy:
-        condition: on-failure
-
-  bsc-scanner:
-    image: ghcr.io/opexdev/bsc-scanner:latest
-    environment:
-      - JAVA_OPTS=-Xmx256m -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=1044
-      - CONSUL_HOST=consul
-      - SWAGGER_AUTH_URL=$KEYCLOAK_FRONTEND_URL
-      - VAULT_HOST=vault
-      - VAULT_ADDR=http://0.0.0.0:8200
-      - PANEL_PASS=${PANEL_PASS}
-      - BACKEND_USER=${BACKEND_USER}
-      - SMTP_PASS=${SMTP_PASS}
-      - DB_USER=${DB_USER:-opex}
-      - DB_PASS=${DB_PASS:-hiopex}
-      - DB_READ_ONLY_USER=${DB_READ_ONLY_USER:-opex_reader}
-      - DB_READ_ONLY_PASS=${DB_READ_ONLY_PASS:-hiopex}
-      - KEYCLOAK_ADMIN_USERNAME=${KEYCLOAK_ADMIN_USERNAME:-opex-admin}
-      - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD:-hiopex}
-      - OPEX_ADMIN_KEYCLOAK_CLIENT_SECRET=${OPEX_ADMIN_KEYCLOAK_CLIENT_SECRET}
-      - VANDAR_API_KEY=$VANDAR_API_KEY
-    depends_on:
-      - consul
-    labels:
-      collect_logs: "true"
-    deploy:
-      restart_policy:
-        condition: on-failure
+    networks:
+      - default
 
   captcha:
     image: ghcr.io/opexdev/captcha
@@ -595,6 +594,8 @@ volumes:
   market-data:
   api-data:
   bc-gateway-data:
+  admin-data:
+  storage-data:
 networks:
   opex:
     external: true

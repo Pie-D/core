@@ -42,8 +42,8 @@ class SwaggerConfig {
             )
             .ignoredParameterTypes(AuthenticationPrincipal::class.java, Principal::class.java)
             .useDefaultResponseMessages(false)
-            .securitySchemes(Collections.singletonList(oauth()))
-            .securityContexts(Collections.singletonList(securityContext()))
+            .securitySchemes(listOf(oauth(), bearerToken()))
+            .securityContexts(securityContext())
     }
 
     private fun apiInfo(): ApiInfo {
@@ -73,15 +73,24 @@ class SwaggerConfig {
         return Collections.singletonList(grantType)
     }
 
-    private fun securityContext(): SecurityContext {
+    private fun securityContext(): List<SecurityContext> {
         val securityReference = SecurityReference.builder()
             .reference("opex")
             .scopes(emptyArray())
             .build()
-        return SecurityContext.builder()
+        val bearerSecurityReference = SecurityReference.builder()
+            .reference("JWT") // Trùng với bearerToken()
+            .scopes(emptyArray())
+            .build()
+        return listOf(
+            SecurityContext.builder()
             .securityReferences(Collections.singletonList(securityReference))
             .operationSelector { true }
-            .build()
+            .build(),
+            SecurityContext.builder()
+                .securityReferences(listOf(bearerSecurityReference))
+                .operationSelector { true }
+                .build())
     }
 
     @Bean
@@ -92,5 +101,9 @@ class SwaggerConfig {
             .appName("opex")
             .scopeSeparator(",")
             .build()
+    }
+
+    private fun bearerToken(): SecurityScheme {
+        return ApiKey("JWT", "Authorization", "header")
     }
 }

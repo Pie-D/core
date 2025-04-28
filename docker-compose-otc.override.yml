@@ -8,7 +8,7 @@ services:
   wallet:
     build: wallet/wallet-app
     volumes:
-      - "./preferences-dev.yml:/preferences.yml"
+      - "./preferences-test.yml:/preferences.yml"
       - "./drive-key.json:/drive-key.json"
   vault:
     build: docker-images/vault
@@ -16,5 +16,5 @@ services:
   bc-gateway:
     build: bc-gateway/bc-gateway-app
     volumes:
-      - "./preferences-dev.yml:/preferences.yml"
+      - "./preferences-test.yml:/preferences.yml"
 

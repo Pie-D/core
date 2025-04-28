@@ -2,6 +2,7 @@ package co.nilin.opex.wallet.app.service
 
 import co.nilin.opex.common.OpexError
 import co.nilin.opex.utility.preferences.Preferences
+import co.nilin.opex.wallet.app.dto.mypreferences.MyPreferences
 import co.nilin.opex.wallet.core.model.Amount
 import co.nilin.opex.wallet.core.model.WalletType
 import co.nilin.opex.wallet.core.spi.CurrencyService
@@ -20,7 +21,7 @@ class UserRegistrationService(
 ) {
 
     @Autowired
-    private lateinit var preferences: Preferences
+    private lateinit var preferences: MyPreferences
 
     @Transactional
     suspend fun registerNewUser(event: UserCreatedEvent) {
