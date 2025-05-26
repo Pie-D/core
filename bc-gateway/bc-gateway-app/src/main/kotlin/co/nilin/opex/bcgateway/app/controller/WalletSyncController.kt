@@ -24,7 +24,7 @@ class WalletSyncController(private val chainHandler: ChainHandler, private val w
         }.onFailure {
             throw OpexError.NotFound.exception()
         }.onSuccess {
-            walletSyncService.syncTransfers(transfers)
+            walletSyncService.batchTransfers(transfers)
         }
     }
 
