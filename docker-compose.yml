@@ -93,7 +93,52 @@ services:
       collect_logs: "true"
     networks:
       - default
+  postgres-wallet-transfer:
+    <<: *postgres-db
+    volumes:
+      - wallet-generate-data:/var/lib/postgresql/data/
+    ports:
+      - "5435:5432"
 
+  wallet-transfer:
+    image: registry.gitlab.com/lam1234/wallet
+    ports:
+      - "8889:8881"
+    environment:
+      REDIS_HOST: core-redis-cache-1
+      REDIS_PORT: 6379
+      VAULT_HOST: core-vault-1
+      VAULT_PORT: 8200
+      VAULT_USERID: admin
+      DB_IP_PORT: postgres-wallet-transfer
+      INFURA_URL: https://sepolia.infura.io/v3/cdf66d5d54f543b0881bb5accb479d3c
+      ALCHEMY_URL: https://eth-mainnet.alchemyapi.io/v2/YCO4OXGJRLvDYSTJjUdvUQ7yFIdXxUfh
+      ALCHEMY_KEY: YCO4OXGJRLvDYSTJjUdvUQ7yFIdXxUfh
+      ALCHEMY_ETH: https://eth-mainnet.g.alchemy.com/v2/
+      ALCHEMY_POLYGON: https://polygon-mainnet.g.alchemy.com/v2/
+      ALCHEMY_ARBITRUM: https://arb-mainnet.g.alchemy.com/v2/
+      ALCHEMY_OPTIMISM: https://opt-mainnet.g.alchemy.com/v2/
+      ANKR_URL: https://rpc.ankr.com
+      ANKR_API_KEY: e2c1d921e72162502d858eba3300a5e3b20d7a7f4813bc4c5a2aeb70523e9524
+      OPENKM_URL: https://sec.cmcati.vn/OpenKM
+      OPENKM_USER: okmAdmin
+      OPENKM_PASS: ghp_X60Gn0$dd!f@$h60vtax2f8eVB
+      WALLET_PASS: CMCATI@2025sec
+      BC_GATEWAY_URL: core-bc-gateway-1:8080/wallet-sync/ethereum
+      QUICKNODE_HTTPS: https://small-sleek-choice.ethereum-sepolia.quiknode.pro/0046e993da9e2adfcdddef4024b89cf8e298f40d/
+      QUICKNODE_WSS: wss://small-sleek-choice.ethereum-sepolia.quiknode.pro/0046e993da9e2adfcdddef4024b89cf8e298f40d/
+      MNEMONIC: test
+      PRK: 217def1071ffc01fffc1434421fa6ae8367d01a90e3f771a71b9f551e8445fed
+      SAFE_API: https://safe-transaction-sepolia.safe.global
+      SAFE_ADDR: 0xF2b241342A071E1aD2A3AA36841EC6EA718C114f
+    depends_on:
+      - vault
+      - postgres-wallet-transfer
+    #      - postgres-scanner
+    labels:
+      collect_logs: "true"
+    networks:
+      - default
   captcha:
     image: ghcr.io/opexdev/captcha
     environment:

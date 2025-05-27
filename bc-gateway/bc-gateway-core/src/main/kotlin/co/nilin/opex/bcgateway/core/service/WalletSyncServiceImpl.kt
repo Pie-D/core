@@ -25,7 +25,7 @@ class WalletSyncServiceImpl(
     private val walletProxy: WalletProxy,
     private val assignedAddressHandler: AssignedAddressHandler,
     private val currencyHandler: CurrencyHandler,
-    private val depositHandler: DepositHandler,
+    private val depositHandler: DepositHandler
 ) : WalletSyncService {
 
     private val logger: Logger by LoggerDelegate()

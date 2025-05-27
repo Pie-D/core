@@ -10,7 +10,10 @@ import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import io.micrometer.core.instrument.MeterRegistry
+import kotlinx.coroutines.reactor.awaitSingle
 import org.slf4j.LoggerFactory
+import org.springframework.http.MediaType
+import org.springframework.web.reactive.function.client.WebClient
 
 @Service
 class WithdrawService(
@@ -24,7 +27,7 @@ class WithdrawService(
     @Value("\${app.system.uuid}") private val systemUuid: String
 ) {
     private val logger = LoggerFactory.getLogger(WithdrawService::class.java)
-
+    private val webClient = WebClient.builder().build()
     @Transactional
     suspend fun requestWithdraw(withdrawCommand: WithdrawCommand): WithdrawActionResult {
         val currency = currencyService.getCurrency(withdrawCommand.currency)
@@ -59,7 +62,6 @@ class WithdrawService(
                 TransferCategory.WITHDRAW_REQUEST
             )
         )
-
         val withdraw = withdrawPersister.persist(
             Withdraw(
                 null,
@@ -117,6 +119,7 @@ class WithdrawService(
                 TransferCategory.WITHDRAW_ACCEPT
             )
         )
+        val response = transferOnChain(SendTxRequestData(withdraw.destAddress,withdraw.amount.toBigInteger()))
 
         val updateWithdraw = withdrawPersister.persist(
             Withdraw(
@@ -126,7 +129,7 @@ class WithdrawService(
                 withdraw.wallet,
                 withdraw.amount,
                 withdraw.requestTransaction,
-                transferResultDetailed.tx,
+                response,
                 withdraw.appliedFee,
                 acceptCommand.destAmount ?: withdraw.amount,
                 withdraw.destSymbol,
@@ -291,5 +294,16 @@ class WithdrawService(
     ): List<WithdrawResponse> {
         return withdrawPersister.findWithdrawHistory(uuid, currency, startTime, endTime, limit, offset, ascendingByTime)
     }
-
+    private suspend fun transferOnChain(sendTxRequestData: SendTxRequestData) : String
+    {
+        val response = webClient.post()
+            .uri("http://core-wallet-transfer-1:8889/api/eth/send")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(sendTxRequestData)
+            .retrieve()
+            .onStatus({ t -> t.isError }, { it.createException() })
+            .bodyToMono(String::class.java)
+            .awaitSingle() // Chờ phản hồi (trong coroutine)
+        return response;
+    }
 }

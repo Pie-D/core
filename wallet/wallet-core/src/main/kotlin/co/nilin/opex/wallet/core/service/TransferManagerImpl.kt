@@ -1,18 +1,16 @@
 package co.nilin.opex.wallet.core.service
 
 import co.nilin.opex.common.OpexError
-import co.nilin.opex.wallet.core.exc.CurrencyNotMatchedException
-import co.nilin.opex.wallet.core.exc.DepositLimitExceededException
-import co.nilin.opex.wallet.core.exc.NotEnoughBalanceException
-import co.nilin.opex.wallet.core.exc.WithdrawLimitExceededException
+
 import co.nilin.opex.wallet.core.inout.TransferCommand
 import co.nilin.opex.wallet.core.inout.TransferResult
 import co.nilin.opex.wallet.core.inout.TransferResultDetailed
 import co.nilin.opex.wallet.core.model.*
 import co.nilin.opex.wallet.core.spi.*
-import org.slf4j.LoggerFactory
+
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+
 import java.time.LocalDateTime
 import java.util.*
 
@@ -24,7 +22,6 @@ class TransferManagerImpl(
     private val transactionManager: TransactionManager,
     private val userTransactionManager: UserTransactionManager,
 ) : TransferManager {
-
     @Transactional
     override suspend fun transfer(transferCommand: TransferCommand): TransferResultDetailed {
         //pre transfer hook (dispatch pre transfer event)
@@ -92,7 +89,6 @@ class TransferManagerImpl(
             ), tx.toString()
         )
     }
-
     private suspend fun createUserTX(command: TransferCommand, txId: Long) {
         val currency = command.amount.currency.symbol
         val amount = command.amount.amount
