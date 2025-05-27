@@ -632,6 +632,7 @@ volumes:
   redis-duo-data:
   redis-duo.conf:
   redis-cache-data:
+  wallet-generate-data:
   accountant-data:
   eventlog-data:
   auth-data:
