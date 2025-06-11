@@ -221,7 +221,7 @@ interface TradeRepository : ReactiveCrudRepository<TradeModel, Long> {
 
     @Query(
             """
-        WITH intervals AS (SELECT * FROM interval_generator((:startTime), (:endTime), :interval ::INTERVAL)), 
+        WITH intervals AS (SELECT * FROM interval_generator(:startTime::TIMESTAMP, :endTime::TIMESTAMP, :interval::INTERVAL)), 
         first_trade AS (
             SELECT DISTINCT ON (f.start_time) f.start_time, f.end_time, t.matched_price AS open_price FROM intervals f 
             LEFT JOIN trades t ON t.create_date >= f.start_time AND t.create_date < f.end_time AND t.symbol = :symbol
@@ -259,9 +259,7 @@ interface TradeRepository : ReactiveCrudRepository<TradeModel, Long> {
             @Param("startTime")
             startTime: LocalDateTime,
             @Param("endTime")
-            endTime: LocalDateTime,
-            @Param("limit")
-            limit: Int,
+            endTime: LocalDateTime
     ): Flux<CandleInfoData>
 
     @Query("select * from trades order by create_date desc limit 1")
@@ -388,9 +386,9 @@ interface TradeRepository : ReactiveCrudRepository<TradeModel, Long> {
             WHERE (t.maker_uuid = :user OR t.taker_uuid = :user)
             and (:startDate is null or trade_date >=:startDate) 
             and (:endDate is null or trade_date <=:endDate)
-            
+
             union 
-            
+
             select t.trade_date As create_date,
             t.matched_quantity AS volume,
             t.matched_price AS matched_price,
@@ -410,7 +408,7 @@ interface TradeRepository : ReactiveCrudRepository<TradeModel, Long> {
             WHERE (t.maker_uuid = :user OR t.taker_uuid = :user)
             and (:startDate is null or trade_date >=:startDate) 
             and (:endDate is null or trade_date <=:endDate)            
-            
+
             order by create_date ASC offset :offset limit :limit  """)
 
     fun findTxOfTradesAsc(user: String, startDate: LocalDateTime?, endDate: LocalDateTime?, offset: Int?, limit: Int?): Flux<Transaction>
@@ -436,9 +434,9 @@ interface TradeRepository : ReactiveCrudRepository<TradeModel, Long> {
             WHERE (t.maker_uuid = :user OR t.taker_uuid = :user)
             and (:startDate is null or trade_date >=:startDate) 
             and (:endDate is null or trade_date <=:endDate)
-            
+
             union 
-            
+
             select t.trade_date As create_date,
             t.matched_quantity AS volume,
             t.matched_price AS matched_price,
@@ -458,7 +456,7 @@ interface TradeRepository : ReactiveCrudRepository<TradeModel, Long> {
             WHERE (t.maker_uuid = :user OR t.taker_uuid = :user)
             and (:startDate is null or trade_date >=:startDate) 
             and (:endDate is null or trade_date <=:endDate)            
-            
+
             order by create_date DESC offset :offset limit :limit  """)
 
     fun findTxOfTradesDesc(user: String, startDate: LocalDateTime?, endDate: LocalDateTime?, offset: Int?, limit: Int?): Flux<Transaction>

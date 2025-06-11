@@ -158,7 +158,7 @@ class MarketQueryHandlerImpl(
                 LocalDateTime.ofInstant(this, ZoneId.systemDefault())
             }
 
-        return tradeRepository.candleData(symbol, interval, st, et, limit)
+        return tradeRepository.candleData(symbol, interval, st, et)
             .collectList()
             .awaitFirstOrElse { emptyList() }
             .map {
